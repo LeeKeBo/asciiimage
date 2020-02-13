@@ -15,11 +15,15 @@ public class AsciiCache {
     private Map<Character,GrayScaleMatrix> imageCache;      // 记录所有的字符集图片矩阵
     private static char[] defaultChar = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. "
             .toCharArray();                                 // 默认使用的字符集
+    private static Font defaultFont = new Font("Courier", Font.BOLD, 6);
+
+    public AsciiCache(){
+        this(defaultFont,defaultChar);
+    }
 
     public AsciiCache(final Font font){
         this(font,defaultChar);
     }
-
 
     /**
      * 根据输入的字体和字符集创建每个字符集的图片缓存

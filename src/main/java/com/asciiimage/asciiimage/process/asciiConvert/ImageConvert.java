@@ -1,6 +1,7 @@
 package com.asciiimage.asciiimage.process.asciiConvert;
 
 import com.asciiimage.asciiimage.process.charFitStrategy.charFitStrategy;
+import com.asciiimage.asciiimage.process.charFitStrategy.ssimFitStrategy;
 import com.asciiimage.asciiimage.process.matrix.GrayScaleMatrix;
 import com.asciiimage.asciiimage.process.matrix.TileGrayScaleMatrix;
 
@@ -16,6 +17,11 @@ public abstract class ImageConvert<Output> {
     protected charFitStrategy strategy;     // 字符替代算法
     protected Output output;
     //protected
+
+    public ImageConvert(){
+        this.charCache = new AsciiCache();
+        this.strategy = new ssimFitStrategy();
+    }
 
     public ImageConvert(AsciiCache charCache,charFitStrategy strategy){
         this.charCache = charCache;

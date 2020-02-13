@@ -9,6 +9,10 @@ import com.asciiimage.asciiimage.process.utils.*;
  */
 public class gifConvert extends AsciiToImageConvert{
 
+    public gifConvert(){
+        super();
+    }
+
     public gifConvert(AsciiCache asciiCache, charFitStrategy charFitStrategy) {
         super(asciiCache, charFitStrategy);
     }

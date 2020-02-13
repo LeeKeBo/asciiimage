@@ -8,6 +8,10 @@ import java.awt.image.BufferedImage;
 
 public class AsciiToImageConvert extends ImageConvert<BufferedImage>{
 
+    public AsciiToImageConvert(){
+        super();
+    }
+
     public AsciiToImageConvert(AsciiCache asciiCache, charFitStrategy charFitStrategy){
         super(asciiCache,charFitStrategy);
     }

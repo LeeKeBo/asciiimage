@@ -34,24 +34,25 @@ public class Convert {
             return suffix.equals("gif") ? new gifConvert(asciiCache, defaultCharFit) : new AsciiToImageConvert(asciiCache, defaultCharFit);
         }
     }
-
+//
 //    public static void main(String[] args) throws IOException {
-//        Font font = new Font("Courier", Font.BOLD, 3);
+//        Font font = new Font("Courier", Font.BOLD, 8);
 //        AsciiCache asciiCache = new AsciiCache(font);
 //        charFitStrategy charFitStrategy = new ssimFitStrategy();
-////        ImageConvert convert = new AsciiToImageConvert(asciiCache, charFitStrategy);
+//        ImageConvert convert = new AsciiToImageConvert(asciiCache, charFitStrategy);
 ////            BufferedImage source = ImageIO.read(new File(
 ////                    "examples/portrait.png"));
 ////            BufferedImage result = (BufferedImage) convert.convertImage(source);
 ////            ImageIO.write(result, "png",
 ////                    new File("examples/portrait_small_square_error.png"));
-//            gifConvert gifConverterTest = new gifConvert(asciiCache,charFitStrategy);
+////            gifConvert gifConverterTest = new gifConvert(asciiCache,charFitStrategy);
 //            //defaultImageConvert.gitCon
 //
-//        defaultGifConvert.gifConverter("src/main/resources/static/target/BWDeVXQyOr.gif","examples/12.gif",10,0);
-////        BufferedImage source2 = ImageIO.read(new File("examples/1.jpg"));
-////        BufferedImage convertRes = (BufferedImage) convert.convertImage(source2);
-////        ImageIO.write(convertRes, "png", new File("examples/2.jpg"));
+//        int i = defaultGifConvert.gifColorConverter("examples/test.gif","examples/12.gif",10,0);
+//        System.out.println(i);
+//        BufferedImage source2 = ImageIO.read(new File("examples/1.jpg"));
+//        BufferedImage convertRes = (BufferedImage) convert.convertColorImage(source2);
+//        ImageIO.write(convertRes, "png", new File("examples/2.jpg"));
 //
 //
 //    }

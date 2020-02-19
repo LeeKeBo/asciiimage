@@ -1,6 +1,7 @@
 package com.asciiimage.asciiimage.process.asciiConvert;
 
 import com.asciiimage.asciiimage.process.matrix.GrayScaleMatrix;
+import com.asciiimage.asciiimage.process.matrix.NormalMatrix;
 
 import java.awt.*;
 import java.awt.font.TextLayout;
@@ -13,6 +14,7 @@ public class AsciiCache {
 
     private Dimension tileSize  = new Dimension();                            // 字符集图片矩阵尺寸
     private Map<Character,GrayScaleMatrix> imageCache;      // 记录所有的字符集图片矩阵
+    private Font font;
     private static char[] defaultChar = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. "
             .toCharArray();                                 // 默认使用的字符集
     private static Font defaultFont = new Font("Courier", Font.BOLD, 6);
@@ -31,6 +33,7 @@ public class AsciiCache {
      * @param characters    字符集
      */
     public AsciiCache(final Font font,final char[] characters){
+        this.font = font;
         calculateSize(font,characters);                     // 计算尺寸
         createCharactersCache(font,characters,tileSize);    // 创建字符图片缓存
     }
@@ -103,6 +106,30 @@ public class AsciiCache {
             GrayScaleMatrix matrix = new GrayScaleMatrix(pixels,tileSize.width,tileSize.height);
             this.imageCache.put(characters[i],matrix);
         }
+    }
+
+    public NormalMatrix getColorMatrix(int[] color,char charToDraw){
+        BufferedImage img = new BufferedImage(tileSize.width,tileSize.height,BufferedImage.TYPE_INT_ARGB);
+        Graphics2D graphics2D = (Graphics2D)img.getGraphics();
+        graphics2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        graphics2D.setFont(font);
+        FontMetrics fm = graphics2D.getFontMetrics();
+
+        String character = Character.toString(charToDraw);
+        graphics2D.setColor(Color.WHITE);
+        graphics2D.fillRect(0,0,tileSize.width,tileSize.height);        //白底
+        graphics2D.setColor(new Color(color[0],color[1],color[2]));
+        Rectangle rect = new TextLayout(character,fm.getFont(),fm.getFontRenderContext())
+                .getOutline(null).getBounds();
+
+        // 此处存疑
+        graphics2D.drawString(character,0,(int)(rect.getHeight() - rect.getMaxY()));    // 此处的y是字符串基线位置的坐标
+//            System.out.println("Y: " + rect.getY());
+//            System.out.println("Height: " + rect.getHeight());
+
+        int []pixels = img.getRGB(0,0,tileSize.width,tileSize.height,null,0,tileSize.width);
+        NormalMatrix matrix = new NormalMatrix(pixels,tileSize.width,tileSize.height);
+        return matrix;
     }
 
 

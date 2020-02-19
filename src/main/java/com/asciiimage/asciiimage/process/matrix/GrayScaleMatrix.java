@@ -4,7 +4,7 @@ package com.asciiimage.asciiimage.process.matrix;
 /**
  * GrayScaleMatrix类存有一个矩阵，矩阵记录RGB图片转化为灰度值后的像素点数组
  */
-public class GrayScaleMatrix {
+public class GrayScaleMatrix extends MyMatrix{
     // data数组记录像素点的值
     private float[] data;
     private int width, height;

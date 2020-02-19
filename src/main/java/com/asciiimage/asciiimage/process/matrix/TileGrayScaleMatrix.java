@@ -6,13 +6,13 @@ import java.util.ArrayList;
  * TileGrayScaleMatrix 可以将一个大的GrayScaleMatrix分解为多个小的GrayScaleMatrix,每一块表示一个 tile，一个tile在图片中占据一个字符位置
  * TileGrayScaleMatrix 中包含一个数组存储所有的tile，一块tile的大小
  */
-public class TileGrayScaleMatrix {
+public class TileGrayScaleMatrix <T extends MyMatrix>{
 
     private int tileWidth,tileHeight;
     private int rows,columns;
-    private ArrayList<GrayScaleMatrix> tiles;
+    private ArrayList<T> tiles;
 
-    public TileGrayScaleMatrix(GrayScaleMatrix source,final int tileWidth,final int tileHeight){
+    public TileGrayScaleMatrix(T source,final int tileWidth,final int tileHeight){
         if(tileHeight <= 0 || tileWidth <= 0){
             throw new IllegalArgumentException("tile尺寸有误");
         }
@@ -26,16 +26,16 @@ public class TileGrayScaleMatrix {
         this.columns = width/tileWidth;
         this.tileHeight = tileHeight;
         this.tileWidth = tileWidth;
-        tiles = new ArrayList<GrayScaleMatrix>(rows * columns);
+        tiles = new ArrayList<T>(rows * columns);
 
         for(int i=0;i<rows;i++){
             for(int j=0;j<columns;j++){
-                tiles.add(source.getSubMatrix(j * tileWidth,i * tileHeight,tileWidth,tileHeight));
+                tiles.add((T)source.getSubMatrix(j * tileWidth,i * tileHeight,tileWidth,tileHeight));
             }
         }
     }
 
-    public GrayScaleMatrix getTile(int index){
+    public T getTile(int index){
         if(index < 0 || index >= rows * columns){
             throw new IllegalArgumentException("下标溢出");
         }

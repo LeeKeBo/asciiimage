@@ -34,3 +34,4 @@ out/
 ### others  ###
 examples
 src/main/resources/static/
+static

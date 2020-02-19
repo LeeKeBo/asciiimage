@@ -46,4 +46,31 @@ public class gifConvert extends AsciiToImageConvert{
             return -1;          // 源文件路径有误
         }
     }
+
+    public int gifColorConverter(String srcPath,String targetPath,final int delay,final int repeat){
+        GifDecoder gifDecoder = new GifDecoder();
+
+        int status = gifDecoder.read(srcPath);
+        if(status == 0){
+            AnimatedGifEncoder animatedGifEncoder = new AnimatedGifEncoder();
+            boolean targetStatus = animatedGifEncoder.start(targetPath);
+            if(targetStatus){
+                animatedGifEncoder.setDelay(delay);
+                animatedGifEncoder.setRepeat(repeat);
+                int count = gifDecoder.getFrameCount();
+                for(int i=0;i<count;i++){
+                    animatedGifEncoder.addFrame(convertColorImage(gifDecoder.getFrame(i)));
+                }
+                animatedGifEncoder.finish();
+                return 1;       // 成功转换
+            }
+            else{
+                return 0;       // 目标文件路径有误
+            }
+        }
+        else{
+            return -1;          // 源文件路径有误
+        }
+    }
+
 }

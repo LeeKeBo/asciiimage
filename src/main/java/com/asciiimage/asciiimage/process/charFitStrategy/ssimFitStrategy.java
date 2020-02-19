@@ -1,6 +1,7 @@
 package com.asciiimage.asciiimage.process.charFitStrategy;
 
 import com.asciiimage.asciiimage.process.matrix.GrayScaleMatrix;
+import com.asciiimage.asciiimage.process.matrix.NormalMatrix;
 
 /**
  */
@@ -18,6 +19,19 @@ public class ssimFitStrategy implements charFitStrategy {
     public float calculateError(GrayScaleMatrix character, GrayScaleMatrix tile) {
         float score = 0;
         float []characterData = character.getData(),tileData = tile.getData();
+        float C1 = 0.00001f,C2 = 0.00003f;          // C1, C2 为两个较小的数，用来防止出现为0的情况
+        for(int i=0;i<characterData.length;i++){
+            score += (2 * characterData[i] * tileData[i] +C1) * (2 + C2)            // 此处的均值为像素点的RGB值任一（灰度图RGB各分量相等），协方差为1
+                    /(characterData[i] * characterData[i] + tileData[i] * tileData[i] + C1 ) / C2;  //  此处方差为0
+        }
+        return 1 - score/characterData.length;
+    }
+
+    @Override
+    public float calculateError(GrayScaleMatrix character, NormalMatrix tile) {
+        float score = 0;
+        float []characterData = character.getData();
+        int []tileData = tile.getData();
         float C1 = 0.00001f,C2 = 0.00003f;          // C1, C2 为两个较小的数，用来防止出现为0的情况
         for(int i=0;i<characterData.length;i++){
             score += (2 * characterData[i] * tileData[i] +C1) * (2 + C2)            // 此处的均值为像素点的RGB值任一（灰度图RGB各分量相等），协方差为1

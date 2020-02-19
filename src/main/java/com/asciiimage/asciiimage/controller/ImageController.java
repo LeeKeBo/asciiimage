@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 @RestController
@@ -28,10 +29,8 @@ import java.io.IOException;
 )
 public class ImageController {
     @Value("${uploadDir}")
-//    @Value("${dir.uploadDir}")
     private String uploadDir;
     @Value("${targetDir}")
-//    @Value("${dir.targetDir}")
     private String targetDir;
     @Value("${pictureUrl}")
     private String url;
@@ -64,12 +63,11 @@ public class ImageController {
             try {
                 // 保存文件
                 file.transferTo(source);
-
                 // 获取变换器完成图片转变
                 if (suffixWithoutPoint.equals("gif")) {
-                    System.out.println("gif");
                     gifConverter = (gifConvert) convert.CreateConverter(suffixWithoutPoint, size, charSet);
-                    gifConverter.gifConverter(uploadDir + name, targetDir + name, 10, 0);
+                    int result = gifConverter.gifConverter(uploadDir + name, targetDir + name, 10, 0);
+                    System.out.println(result);
                 } else {
                     imageConvert = (AsciiToImageConvert) convert.CreateConverter(suffixWithoutPoint, size, charSet);
                     BufferedImage convertRes = (BufferedImage) imageConvert.convertImage(ImageIO.read(source));

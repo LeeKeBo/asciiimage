@@ -17,13 +17,18 @@ public class gifConvert extends AsciiToImageConvert{
         super(asciiCache, charFitStrategy);
     }
 
-    public int gitConverter(String srcPath,String targetPath,final int delay,final int repeat){
+    public int gifConverter(final String srcPath,final String targetPath){
+        return gifConverter(srcPath,targetPath,10,0);
+    }
+
+    public int gifConverter(String srcPath,String targetPath,final int delay,final int repeat){
         GifDecoder gifDecoder = new GifDecoder();
+
         int status = gifDecoder.read(srcPath);
         if(status == 0){
             AnimatedGifEncoder animatedGifEncoder = new AnimatedGifEncoder();
-            boolean targetstatus = animatedGifEncoder.start(targetPath);
-            if(targetstatus){
+            boolean targetStatus = animatedGifEncoder.start(targetPath);
+            if(targetStatus){
                 animatedGifEncoder.setDelay(delay);
                 animatedGifEncoder.setRepeat(repeat);
                 int count = gifDecoder.getFrameCount();

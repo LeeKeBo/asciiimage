@@ -1,5 +1,7 @@
 package com.asciiimage.asciiimage.controller;
 
+import com.asciiimage.asciiimage.process.Convert;
+import com.asciiimage.asciiimage.process.asciiConvert.AsciiCache;
 import com.asciiimage.asciiimage.process.asciiConvert.AsciiToImageConvert;
 import com.asciiimage.asciiimage.process.asciiConvert.ImageConvert;
 import com.asciiimage.asciiimage.process.asciiConvert.gifConvert;
@@ -10,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -24,34 +28,54 @@ import java.io.IOException;
 )
 public class ImageController {
     @Value("${uploadDir}")
+//    @Value("${dir.uploadDir}")
     private String uploadDir;
     @Value("${targetDir}")
+//    @Value("${dir.targetDir}")
     private String targetDir;
-    private String url = "http://localhost:8080/static/target/";
+    @Value("${pictureUrl}")
+    private String url;
     private int fileNameLength = 10;
     private Result result = new Result();
-    private ImageConvert imageConvert = new AsciiToImageConvert();
-    private ImageConvert gifConvert = new gifConvert();
+    private ImageConvert imageConvert;
+    private gifConvert gifConverter;
+    private Convert convert = new Convert();
 
     @PostMapping("/Image")
     @ResponseBody
-    public Result postImageToConvert(@RequestParam(value = "file") MultipartFile file,String service){
-        if(file.isEmpty()){
+    public Result postImageToConvert(@RequestParam(value = "file") MultipartFile file, HttpServletRequest request) {
+        if (file.isEmpty()) {
             result.setStatus(false);
             result.setMessage("未上传文件");
-        }
-        else {
+        } else {
+            // 得到字符集和字体大小
+            String charSet = request.getParameter("charSet");
+            int size = Integer.parseInt(request.getParameter("size"));
             String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+            String suffixWithoutPoint = suffix.substring(1);
             String name = GenerateRandomName.GenerateName(fileNameLength, suffix);
-            File target = new File(new File(uploadDir).getAbsolutePath() + "/" +name);
+            File source = new File(new File(uploadDir).getAbsolutePath() + "/" + name);
             // 若父文件夹不存在，创建该文件夹
-            if (!target.getParentFile().exists())
+            if (!source.getParentFile().exists())
+                source.getParentFile().mkdirs();
+            File target = new File(new File(targetDir).getAbsolutePath()+"/" + name);
+            if(!target.getParentFile().exists())
                 target.getParentFile().mkdirs();
             try {
                 // 保存文件
-                file.transferTo(target);
-                BufferedImage convertRes = (BufferedImage) imageConvert.convertImage(ImageIO.read(target));
-                ImageIO.write(convertRes, "png", new File( new File(targetDir).getAbsolutePath() + "/" + name));
+                file.transferTo(source);
+
+                // 获取变换器完成图片转变
+                if (suffixWithoutPoint.equals("gif")) {
+                    System.out.println("gif");
+                    gifConverter = (gifConvert) convert.CreateConverter(suffixWithoutPoint, size, charSet);
+                    gifConverter.gifConverter(uploadDir + name, targetDir + name, 10, 0);
+                } else {
+                    imageConvert = (AsciiToImageConvert) convert.CreateConverter(suffixWithoutPoint, size, charSet);
+                    BufferedImage convertRes = (BufferedImage) imageConvert.convertImage(ImageIO.read(source));
+                    ImageIO.write(convertRes, "png",target);
+                }
+
                 result.setStatus(true);
                 result.setFileName(url + name);
             } catch (IOException e) {
@@ -64,12 +88,11 @@ public class ImageController {
     }
 
     @GetMapping("/Image")
-    public Result getImage(@RequestParam(value = "fileName") final String fileName){
-        if(fileName.isEmpty()){
+    public Result getImage(@RequestParam(value = "fileName") final String fileName) {
+        if (fileName.isEmpty()) {
             result.setStatus(false);
             result.setMessage("文件名为空");
-        }
-        else{
+        } else {
 
         }
         return result;

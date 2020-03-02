@@ -17,6 +17,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 @RestController
@@ -50,6 +51,7 @@ public class ImageController {
             // 得到字符集和字体大小
             String charSet = request.getParameter("charSet");
             int size = Integer.parseInt(request.getParameter("size"));
+            String type = request.getParameter("type");
             String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
             String suffixWithoutPoint = suffix.substring(1);
             String name = GenerateRandomName.GenerateName(fileNameLength, suffix);
@@ -66,20 +68,31 @@ public class ImageController {
                 // 获取变换器完成图片转变
                 if (suffixWithoutPoint.equals("gif")) {
                     gifConverter = (gifConvert) convert.CreateConverter(suffixWithoutPoint, size, charSet);
-                    int result = gifConverter.gifConverter(uploadDir + name, targetDir + name, 10, 0);
-                    System.out.println(result);
+                    if(type.equals("color"))
+                        gifConverter.gifColorConverter(uploadDir + name, targetDir + name, 10, 0);
+                    else
+                        gifConverter.gifConverter(uploadDir + name, targetDir + name, 10, 0);
                 } else {
                     imageConvert = (AsciiToImageConvert) convert.CreateConverter(suffixWithoutPoint, size, charSet);
-                    BufferedImage convertRes = (BufferedImage) imageConvert.convertImage(ImageIO.read(source));
+                    BufferedImage convertRes = null;
+                    System.out.println(type);
+                    if(type.equals("color"))
+                        convertRes = (BufferedImage) imageConvert.convertColorImage(ImageIO.read(source));
+                    else
+                        convertRes = (BufferedImage) imageConvert.convertImage(ImageIO.read(source));
                     ImageIO.write(convertRes, "png",target);
                 }
 
                 result.setStatus(true);
                 result.setFileName(url + name);
-            } catch (IOException e) {
+            } catch (FileNotFoundException e){
+                e.printStackTrace();
+                result.setMessage(e.getMessage());
+                result.setStatus(false);
+            } catch (Exception e) {
                 e.printStackTrace();
                 result.setStatus(false);
-                result.setMessage("文件保存有误");
+                result.setMessage(e.getMessage());
             }
         }
         return result;

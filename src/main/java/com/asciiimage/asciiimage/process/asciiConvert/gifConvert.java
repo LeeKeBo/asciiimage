@@ -4,6 +4,8 @@ import com.asciiimage.asciiimage.process.charFitStrategy.charFitStrategy;
 
 import com.asciiimage.asciiimage.process.utils.*;
 
+import java.io.FileNotFoundException;
+
 /**
  * gif的转换可以通过继承之前的图片转换器来实现，只需将GIF逐帧读取后，对每一帧都进行一次变化后再存入即可
  */
@@ -17,11 +19,11 @@ public class gifConvert extends AsciiToImageConvert{
         super(asciiCache, charFitStrategy);
     }
 
-    public int gifConverter(final String srcPath,final String targetPath){
+    public int gifConverter(final String srcPath,final String targetPath) throws FileNotFoundException {
         return gifConverter(srcPath,targetPath,10,0);
     }
 
-    public int gifConverter(String srcPath,String targetPath,final int delay,final int repeat){
+    public int gifConverter(String srcPath,String targetPath,final int delay,final int repeat) throws FileNotFoundException {
         GifDecoder gifDecoder = new GifDecoder();
 
         int status = gifDecoder.read(srcPath);
@@ -39,11 +41,11 @@ public class gifConvert extends AsciiToImageConvert{
                 return 1;       // 成功转换
             }
             else{
-                return 0;       // 目标文件路径有误
+                throw new FileNotFoundException("找不到目标文件");    // 目标文件路径有误
             }
         }
         else{
-            return -1;          // 源文件路径有误
+            throw new FileNotFoundException("找不到源文件");          // 源文件路径有误
         }
     }
 

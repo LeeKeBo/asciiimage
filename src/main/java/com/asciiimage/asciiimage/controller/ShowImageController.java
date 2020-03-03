@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class ShowImageController {
 
-    @RequestMapping(value = {"/index","/"})
-    public String getImage(){
-        return "static/html/index";
-    }
+//    @RequestMapping(value = {"/index","/"})
+//    public String getImage(){
+//        return "static/html/index";
+//    }
 }

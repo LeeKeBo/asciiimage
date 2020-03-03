@@ -19,25 +19,13 @@ public class mappingController {
 
     @Autowired
     WebApplicationContext applicationContext;
-    //@Value("${targetDir}")
-//    String targetDir;
 
     @RequestMapping(value = "v1/getAllUrl", method = RequestMethod.GET)
     public Object getAllUrl() {
-//        System.out.println(targetDir);
         RequestMappingHandlerMapping mapping = applicationContext.getBean(RequestMappingHandlerMapping.class);
         // 获取url与类和方法的对应信息
         Map<RequestMappingInfo, HandlerMethod> map = mapping.getHandlerMethods();
 
-//		List<String> urlList = new ArrayList<>();
-//		for (RequestMappingInfo info : map.keySet()) {
-//			// 获取url的Set集合，一个方法可能对应多个url
-//			Set<String> patterns = info.getPatternsCondition().getPatterns();
-//
-//			for (String url : patterns) {
-//				urlList.add(url);
-//			}
-//		}
 
         List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         for (Map.Entry<RequestMappingInfo, HandlerMethod> m : map.entrySet()) {
@@ -58,7 +46,6 @@ public class mappingController {
             list.add(map1);
         }
 
-        //JSONArray jsonArray = JSONArray.fromObject(list);
 
         return list;
     }
